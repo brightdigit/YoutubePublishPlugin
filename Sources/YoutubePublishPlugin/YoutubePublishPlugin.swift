@@ -30,7 +30,7 @@ public extension Modifier {
             markdown = markdown.dropFirst(prefix.count).trimmingCharacters(in: .newlines)
             
             guard let url = URL(string: markdown) else {
-                fatalError("Invalid tweet URL \(markdown)")
+                fatalError("Invalid youtube URL \(markdown)")
             }
             
             let generator = YoutubeEmbedGenerator(url: url, configuration: .default)
