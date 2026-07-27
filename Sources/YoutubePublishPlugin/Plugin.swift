@@ -1,5 +1,5 @@
 //
-//  YoutubeEmbedConfiguration.swift
+//  Plugin.swift
 //  YoutubePublishPlugin
 //
 //  Created by Leo Dion.
@@ -28,15 +28,18 @@
 //
 
 import Foundation
+import Ink
+import Publish
 
-internal struct YoutubeEmbedConfiguration {
-  internal static var `default`: YoutubeEmbedConfiguration { YoutubeEmbedConfiguration() }
-
-  internal var width: Int
-  internal var height: Int
-
-  internal init(width: Int = 560, height: Int = 315) {
-    self.width = width
-    self.height = height
+/// A plugin for Publish that allows you to embed YouTube videos in your blog posts.
+extension Plugin {
+  /// Creates a new YouTube plugin with the specified renderer.
+  ///
+  /// - Parameter renderer: The renderer to use for rendering YouTube blockquotes.
+  /// - Returns: A new YouTube plugin.
+  public static func youtube(renderer: YoutubeRenderer = DefaultYoutubeRenderer()) -> Self {
+    Plugin(name: "Youtube") { context in
+      context.markdownParser.addModifier(.youtubeBlockQuote(using: renderer))
+    }
   }
 }

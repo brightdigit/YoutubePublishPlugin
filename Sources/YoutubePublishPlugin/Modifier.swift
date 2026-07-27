@@ -1,5 +1,5 @@
 //
-//  YoutubeEmbedConfiguration.swift
+//  Modifier.swift
 //  YoutubePublishPlugin
 //
 //  Created by Leo Dion.
@@ -28,15 +28,37 @@
 //
 
 import Foundation
+import Ink
+import Publish
 
-internal struct YoutubeEmbedConfiguration {
-  internal static var `default`: YoutubeEmbedConfiguration { YoutubeEmbedConfiguration() }
+/// A modifier for Ink that helps rendering YouTube blockquotes into an HTML string.
+extension Modifier {
+  /// Creates a new modifier.
+  /// It uses a renderer to convert a YouTube blockquote into HTML.
+  ///
+  /// - Parameter renderer: The renderer to use for rendering YouTube blockquotes.
+  /// - Returns: A new modifier.
+  public static func youtubeBlockQuote(using renderer: YoutubeRenderer) -> Self {
+    Modifier(target: .blockquotes) { html, markdown in
+      let prefix = "youtube "
+      var markdown = markdown.dropFirst().trimmingCharacters(in: .whitespaces)
+      guard markdown.hasPrefix(prefix) else {
+        return html
+      }
 
-  internal var width: Int
-  internal var height: Int
+      markdown = markdown.dropFirst(prefix.count).trimmingCharacters(in: .newlines)
 
-  internal init(width: Int = 560, height: Int = 315) {
-    self.width = width
-    self.height = height
+      guard let url = URL(string: markdown) else {
+        fatalError("Invalid youtube URL \(markdown)")
+      }
+
+      let generator = YoutubeEmbedGenerator(url: url, configuration: .default)
+      do {
+        let youtube = try generator.generate().get()
+        return try renderer.render(youtube: youtube)
+      } catch {
+        fatalError("Failed to render youtube embed: \(error)")
+      }
+    }
   }
 }

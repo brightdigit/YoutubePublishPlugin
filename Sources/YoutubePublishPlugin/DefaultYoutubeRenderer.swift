@@ -1,5 +1,5 @@
 //
-//  YoutubeEmbedConfiguration.swift
+//  DefaultYoutubeRenderer.swift
 //  YoutubePublishPlugin
 //
 //  Created by Leo Dion.
@@ -27,16 +27,12 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import Foundation
+/// A default implementation for YoutubeRenderer.
+/// It just provides the HTML string held by the EmbeddedYoutube.
+public final class DefaultYoutubeRenderer: YoutubeRenderer, Sendable {
+  /// Initializes a new DefaultYoutubeRenderer.
+  public init() {}
 
-internal struct YoutubeEmbedConfiguration {
-  internal static var `default`: YoutubeEmbedConfiguration { YoutubeEmbedConfiguration() }
-
-  internal var width: Int
-  internal var height: Int
-
-  internal init(width: Int = 560, height: Int = 315) {
-    self.width = width
-    self.height = height
-  }
+  /// Renders an EmbeddedYoutube into a string.
+  public func render(youtube: EmbeddedYoutube) throws -> String { youtube.html }
 }
